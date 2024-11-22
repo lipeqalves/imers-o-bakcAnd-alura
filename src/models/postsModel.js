@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import conectarAoBanco from "../config/dbconfig.js"
 
 // Conecta ao banco de dados usando a string de conexão fornecida no ambiente
@@ -24,6 +25,22 @@ export async function criarPost(novoPost) {
         // Insere um novo documento (post) na coleção "posts", retornando um objeto com informações sobre a inserção
         const result = await colecao.insertOne(novoPost);
         return { message: "Post criado com sucesso!", id: result.insertedId };
+
+    } catch (error) {
+        console.error("Erro ao criar post:", error);
+        throw new Error("Erro ao criar post");
+    }
+
+}
+
+export async function atualizarPost(id, novoPost) {
+    try {
+      
+        const db = conexao.db("imersao-instabytes");
+        const colecao = db.collection("posts");
+        const objID = ObjectId.crateFromHexString(id)
+        const result = await colecao.updateOne({_id:new ObjectId(objID)}, {$set:novoPost});
+        return { message: "Post atualizado comsucesso!", id: result.upsertedId };
 
     } catch (error) {
         console.error("Erro ao criar post:", error);
